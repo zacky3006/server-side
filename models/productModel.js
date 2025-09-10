@@ -12,7 +12,3 @@ exports.getStudioProducts = (callback) => {
         LIMIT 4`;
     db.all(sql, [], callback);
 };
-
-exports.getFavorites = (customer_id, callback) => {
-    db.all("SELECT product_id FROM Favorite WHERE customer_id = ?", [customer_id], callback);
-};

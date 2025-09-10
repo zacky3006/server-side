@@ -13,7 +13,6 @@ exports.showSignIn = (req, res) => {
 
 exports.signIn = (req, res) => {
     const { email, password } = req.body;
-    if (!email || !password) return res.render("signin", { error: "กรุณากรอกข้อมูลให้ครบ" });
 
     Customer.findByEmail(email, async (err, user) => {
         if (err) return res.send("Database error.");
@@ -43,7 +42,6 @@ exports.showSignUp = (req, res) => {
 
 exports.signUp = (req, res) => {
     const { email, password } = req.body;
-    if (!email || !password) return res.render("signup", { error: "กรุณากรอกข้อมูลให้ครบ" });
 
     Customer.findByEmail(email, async (err, user) => {
         if (err) return res.send("Database error.");

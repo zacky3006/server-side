@@ -4,39 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>home</title>
-    
+    <title>Home</title>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="nav-left">
-            <a id="logo" href="/home?customer_id=<%= customer_id %>">FACTIO</a>
+            <a id="logo" href="/home">test</a>
         </div>
     </nav>
 
-    <div class="banner">
-    
-    </div>
+    <div class="banner"></div>
 
     <!-- Bestseller Section -->
     <section class="bestseller">
         <h2>BESTSELLERS</h2>
-
         <div class="product-grid" id="productGrid">
             <% products.forEach(product => { %>
                 <div class="product-card">
-                    <div class="product-icons">
-                        <i class="fa-heart fav-icon <%= product.is_favorite ? 'fa-solid' : 'fa-regular' %>" 
-                            data-id="<%= product.product_id %>" 
-                            style="color: <%= product.is_favorite ? 'red' : 'black' %>;">
-                         </i>
-                        <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
-                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
-                        </div>
+                    <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
+                        <i class="fa-solid fa-bag-shopping cart-icon"></i>
                     </div>
-                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
-
+                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
                     <p><%= product.name %></p>
                     <span>$ <%= product.price %></span>
                 </div>
@@ -44,34 +33,29 @@
         </div>
     </section>
 
-   <section class="Studio">
-    <div class="product-grid" id="productGrid">
-        <% studioProducts.forEach(product => { %>
-            <div>
+    <!-- Studio Section -->
+    <section class="studio">
+        <div class="product-grid" id="productGrid">
+            <% studioProducts.forEach(product => { %>
                 <div>
-                    <i class="fa-heart fav-icon <%= product.is_favorite ? 'fa-solid' : 'fa-regular' %>" 
-                        data-id="<%= product.product_id %>" 
-                        style="color: <%= product.is_favorite ? 'red' : 'black' %>;">
-                    </i>
                     <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
                         <i class="fa-solid fa-bag-shopping cart-icon"></i>
                     </div>
+                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
+                    <p><%= product.name %></p>
+                    <span>$ <%= product.price %></span>
                 </div>
-                <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
-                <p><%= product.name %></p>
-                <span>$ <%= product.price %></span>
-            </div>
-        <% }) %>
-    </div>
-</section>
+            <% }) %>
+        </div>
+    </section>
 
     <footer>
         <div>
             <h4>สมาชิก</h4>
-            <p >66070150 นายภัทร์สพล ตั้งจรัสพณิชกุล</p>
-            <p >66070250 นายชัชวาลย์ ทองศิริกุล</p>
-            <p >660070313 นายสหรัฐ รัตนไชย</p>
-            <p >66070123 นายพงศ์พันธุ์ แก้วป้องปก</p>
+            <p>66070150 นายภัทร์สพล ตั้งจรัสพณิชกุล</p>
+            <p>66070250 นายชัชวาลย์ ทองศิริกุล</p>
+            <p>660070313 นายสหรัฐ รัตนไชย</p>
+            <p>66070123 นายพงศ์พันธุ์ แก้วป้องปก</p>
         </div>
     </footer>
 
