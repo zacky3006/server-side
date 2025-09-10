@@ -5,22 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="signup-styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
-</head>
+    </head>
 
 <body>
 
     <div class="container">
         <div class="form-section">
-            <h1>FACTIO</h1>
+            <h1>test</h1>
             <p>ลงทะเบียน</p>
 
             
             <% if (error) { %>
-                <p class="error-message"><%= error %></p>
+                <p style="color: red;"><%= error %></p>
             <% } %>
 
             <form action="/signup" method="POST">
