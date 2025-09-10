@@ -4,28 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    </head>
+    <link rel="stylesheet" href="signin-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
 
 <body>
 
     <div class="container">
         <div class="form-section">
-            <h1>Test</h1>
-            <p>Sign In</p>
+            <h1>FACTIO</h1>
+            <p>เข้าสู่ระบบ</p>
 
             <% if (error) { %>
                 <p style="color: red;"><%= error %></p>
             <% } %>
 
             <form action="/signin" method="POST">
-                <label>Email</label>
+                <label>อีเมล</label>
                 <input type="email" name="email" required>
-                <label>Password</label>
+                <label>รหัสผ่าน</label>
                 <input type="password" name="password" required>
                 <div class="create-account">
-                    Create new account? <a href="/signup">Click here</a>
+                    สร้างบัญชีใหม่? <a href="/signup">กดตรงนี้</a>
                 </div>
-                <button type="submit">Sign In</button>
+                <button type="submit">เข้าสู่ระบบ</button>
             </form>
         </div>
         <div class="image-section"></div>

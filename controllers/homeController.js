@@ -1,8 +1,9 @@
 const Product = require("../models/productModel");
 
 exports.showHome = (req, res) => {
-    const customer_id = req.query.customer_id;
-    if (!customer_id) return res.send("Customer ID is required.");
+    // req.user ถูก set โดย authMiddleware
+    const customer_id = req.user ? req.user.customer_id : null;
+    if (!customer_id) return res.redirect("/signin");
 
     Product.getMaleProducts((err, products) => {
         if (err) return res.send("Database error.");
@@ -14,7 +15,6 @@ exports.showHome = (req, res) => {
                 if (err) return res.send("Database error.");
 
                 const favoriteSet = new Set(favoriteRows.map(r => r.product_id));
-
                 products.forEach(p => p.is_favorite = favoriteSet.has(p.product_id));
                 studioProducts.forEach(p => p.is_favorite = favoriteSet.has(p.product_id));
 
