@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    </head>
+
+<body>
+
+    <div class="container">
+        <div class="form-section">
+            <h1>Test</h1>
+            <p>Sign In</p>
+
+            <% if (error) { %>
+                <p style="color: red;"><%= error %></p>
+            <% } %>
+
+            <form action="/signin" method="POST">
+                <label>Email</label>
+                <input type="email" name="email" required>
+                <label>Password</label>
+                <input type="password" name="password" required>
+                <div class="create-account">
+                    Create new account? <a href="/signup">Click here</a>
+                </div>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+        <div class="image-section"></div>
+    </div>
+
+</body>
+</html>
