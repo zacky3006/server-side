@@ -22,9 +22,6 @@
         <div class="product-grid" id="productGrid">
             <% products.forEach(product => { %>
                 <div class="product-card">
-                    <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
-                        <i class="fa-solid fa-bag-shopping cart-icon"></i>
-                    </div>
                     <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
                     <p><%= product.name %></p>
                     <span>$ <%= product.price %></span>
@@ -38,9 +35,6 @@
         <div class="product-grid" id="productGrid">
             <% studioProducts.forEach(product => { %>
                 <div>
-                    <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
-                        <i class="fa-solid fa-bag-shopping cart-icon"></i>
-                    </div>
                     <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
                     <p><%= product.name %></p>
                     <span>$ <%= product.price %></span>
