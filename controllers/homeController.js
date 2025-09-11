@@ -1,7 +1,7 @@
 const Product = require("../models/productModel");
 
 exports.showHome = (req, res) => {
-    // req.user ถูก set โดย authMiddleware
+
     const customer_id = req.user ? req.user.customer_id : null;
     if (!customer_id) return res.redirect("/signin");
 

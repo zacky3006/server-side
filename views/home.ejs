@@ -8,18 +8,18 @@
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="nav-left">
-            <a id="logo" href="/home">test</a>
+    <nav>
+        <div>
+            <a href="/home">test</a>
         </div>
     </nav>
 
-    <div class="banner"></div>
+    <div></div>
 
-    <!-- Bestseller Section -->
-    <section class="bestseller">
+
+    <section>
         <h2>BESTSELLERS</h2>
-        <div class="product-grid" id="productGrid">
+        <div>
             <% products.forEach(product => { %>
                 <div class="product-card">
                     <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
@@ -30,9 +30,8 @@
         </div>
     </section>
 
-    <!-- Studio Section -->
-    <section class="studio">
-        <div class="product-grid" id="productGrid">
+    <section>
+        <div>
             <% studioProducts.forEach(product => { %>
                 <div>
                     <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
