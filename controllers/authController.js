@@ -7,6 +7,7 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
+// ----------------- แก้ตรงนี้ -----------------
 exports.showSignIn = (req, res) => res.render("signin", { error: null });
 
 exports.signIn = (req, res) => {
@@ -19,11 +20,24 @@ exports.signIn = (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.render("signin", { error: "Email หรือ รหัสผ่านไม่ถูกต้อง" });
 
-        const token = jwt.sign({ customer_id: user.customer_id, email: user.email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        // ✅ เพิ่ม role ของ user ลง JWT
+        const token = jwt.sign(
+            { customer_id: user.customer_id, email: user.email, role: user.role },
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+
         res.cookie("token", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
-        res.redirect("/home");
+
+        // ✅ เช็ค role ที่นี่แทน
+        if (user.role === "admin") {
+            return res.redirect("/admin");
+        } else {
+            return res.redirect("/home");
+        }
     });
 };
+// --------------------------------------------
 
 exports.showSignUp = (req, res) => res.render("signup", { error: null });
 
@@ -36,7 +50,8 @@ exports.signUp = (req, res) => {
 
         try {
             const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-            Customer.create(email, hashed, (err, lastID) => {
+            // 🟢 เพิ่ม role = "user" ตอนสมัคร
+            Customer.create(email, hashed, "user", (err, lastID) => {
                 if (err) return res.send("Error creating account.");
                 res.redirect("/signin");
             });

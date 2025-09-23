@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const db = require("./database/db");
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,11 +19,14 @@ app.use(cookieParser());
 const authRoutes = require("./routes/authRoutes");
 const homeRoutes = require("./routes/homeRoutes");
 const productRoutes = require("./routes/productRoutes");
+const adminRoutes = require("./routes/admin");
 
 // Use routes
 app.use("/", authRoutes);
 app.use("/", homeRoutes);
 app.use("/", productRoutes);
+app.use("/", adminRoutes);
+
 
 // Root redirect to /signin
 app.get("/", (req, res) => res.redirect("/signin"));

@@ -2,7 +2,7 @@ const db = require("../database/db");
 
 const Customer = {
     create: (email, password, callback) => {
-        const sql = "INSERT INTO Customer (email, password) VALUES (?, ?)";
+        const sql = "INSERT INTO Customer (email, password, role) VALUES (?, ?, 'customer')";
         db.run(sql, [email, password], function (err) {
             callback(err, this ? this.lastID : null);
         });
