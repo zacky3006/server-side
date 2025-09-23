@@ -1,5 +1,6 @@
 const db = require("../database/db");
 
+// หน้า Home
 exports.showHome = (req, res) => {
     const customer_id = req.user.customer_id;
 
@@ -13,15 +14,17 @@ exports.showHome = (req, res) => {
         if (err) return res.send("Database error.");
         db.all(sqlMen, [], (err, studioProducts) => {
             if (err) return res.send("Database error.");
-            res.render("home", { products, studioProducts, customer_id }); // ✅ customer_id จาก JWT
+            res.render("home", { products, studioProducts, customer_id });
         });
     });
 };
 
-
+// ฟังก์ชัน filter สินค้า
 exports.filterProducts = (gender, req, res, view) => {
     const customer_id = req.user.customer_id;
-    let { category, color, price } = req.query;
+
+    // เปลี่ยนจาก req.query เป็น req.body เพราะเราจะใช้ method POST
+    let { category, color, price } = req.body;
 
     let sql = "SELECT * FROM Product WHERE 1=1";
     let params = [];
@@ -60,12 +63,12 @@ exports.filterProducts = (gender, req, res, view) => {
     });
 };
 
-// ผู้หญิง
+// ฟิลเตอร์ผู้หญิง
 exports.filterWoman = (req, res) => {
     exports.filterProducts(1, req, res, "filter-woman");
 };
 
-// ผู้ชาย
+// ฟิลเตอร์ผู้ชาย
 exports.filterMan = (req, res) => {
     exports.filterProducts(2, req, res, "filter-man");
 };

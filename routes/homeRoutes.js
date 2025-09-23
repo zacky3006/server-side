@@ -8,6 +8,8 @@ const { authenticate } = require("../middleware/authMiddleware");
 router.get("/home", authenticate, homeController.showHome);
 router.get("/filter-woman", authenticate, homeController.filterWoman);
 router.get("/filter-man", authenticate, homeController.filterMan);
+router.post("/filter-woman", authenticate, homeController.filterWoman);
+router.post("/filter-man", authenticate, homeController.filterMan);
 
 // หน้า Shopping Bag
 router.get('/shopping-bag', authenticate, cartController.showCartPage); // เปลี่ยนจาก showCart เป็น showCartPage
