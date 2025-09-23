@@ -18,25 +18,54 @@ exports.showHome = (req, res) => {
     });
 };
 
-// สำหรับผู้หญิง
+
+exports.filterProducts = (gender, req, res, view) => {
+    const customer_id = req.user.customer_id;
+    let { category, color, price } = req.query;
+
+    let sql = "SELECT * FROM Product WHERE 1=1";
+    let params = [];
+
+    if (gender !== null) {
+        sql += " AND gender = ?";
+        params.push(gender);
+    }
+    if (category) {
+        sql += " AND category_id = ?";
+        params.push(category);
+    }
+    if (color) {
+        sql += " AND color = ?";
+        params.push(color);
+    }
+    if (price === "1") {
+        sql += " AND price BETWEEN ? AND ?";
+        params.push(0, 1000);
+    }
+    if (price === "2") {
+        sql += " AND price BETWEEN ? AND ?";
+        params.push(1000, 5000);
+    }
+    if (price === "3") {
+        sql += " AND price BETWEEN ? AND ?";
+        params.push(5000, 10000);
+    }
+
+    db.all(sql, params, (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            return res.send("Database error.");
+        }
+        res.render(view, { products: rows, customer_id });
+    });
+};
+
+// ผู้หญิง
 exports.filterWoman = (req, res) => {
-    const customer_id = req.user.customer_id;
-    const sql = "SELECT * FROM Product WHERE gender = 1";
-
-    db.all(sql, [], (err, products) => {
-        if (err) return res.send("Database error.");
-        res.render("filter-woman", { products, customer_id });
-    });
+    exports.filterProducts(1, req, res, "filter-woman");
 };
 
-// สำหรับผู้ชาย
+// ผู้ชาย
 exports.filterMan = (req, res) => {
-    const customer_id = req.user.customer_id;
-    const sql = "SELECT * FROM Product WHERE gender = 2";
-
-    db.all(sql, [], (err, products) => {
-        if (err) return res.send("Database error.");
-        res.render("filter-man", { products, customer_id });
-    });
+    exports.filterProducts(2, req, res, "filter-man");
 };
-
