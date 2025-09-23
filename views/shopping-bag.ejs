@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Bag</title>
+  <link rel="stylesheet" href="/shopping-styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <a id="logo" href="/home?customer_id=<%= customer_id %>">FACTIO</a>
+      <a href="/filter-women?customer_id=<%= customer_id %>">WOMEN</a>
+      <a href="/filter-man?customer_id=<%= customer_id %>">MEN</a>
+    </div>
+    <div class="nav-right">
+      <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag?customer_id=<%= customer_id %>"></a>
+    </div>
+  </nav>
+
+  <section class="bestseller">
+    <h1>FACTIO</h1>
+    <h3>SHOPPING BAG</h3>
+    <div class="product-grid"></div>
+  </section>
+
+  <div class="all-continue">
+    <div class="total-price">
+      <span id="total" class="span">TOTAL : 0</span>
+    </div>
+    <button class="button" onclick="goToPayment()">CONTINUE</button>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom">© 2024 Factio</div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cartItems = <%- JSON.stringify(cartItems) %>;
+      const productGrid = document.querySelector(".product-grid");
+      const totalElement = document.getElementById("total");
+
+      function renderCart() {
+        productGrid.innerHTML = "";
+        cartItems.forEach(item => {
+          const productHTML = `
+            <div class="product-card" data-id="${item.product_id}">
+              <a href="/products/${item.product_id}">
+                <img src="${item.image_url}" alt="${item.name}">
+              </a>
+              <a href="/products/${item.product_id}">
+                <p>${item.name}</p>
+              </a>
+              <span class="price" data-price="${item.price}">$ ${item.price}</span>
+              <div class="quantity-control">
+                <button class="decrease">-</button>
+                <span class="quantity">${item.quantity}</span>
+                <button class="increase">+</button>
+              </div>
+            </div>
+          `;
+          productGrid.innerHTML += productHTML;
+        });
+        attachEventListeners();
+        updateTotal();
+      }
+
+      function updateTotal() {
+        let total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        totalElement.textContent = `TOTAL : $ ${total}`;
+      }
+
+      function attachEventListeners() {
+        document.querySelectorAll(".product-card").forEach(card => {
+          const id = parseInt(card.dataset.id);
+          const decreaseBtn = card.querySelector(".decrease");
+          const increaseBtn = card.querySelector(".increase");
+          const quantityElement = card.querySelector(".quantity");
+
+          decreaseBtn.addEventListener("click", function () {
+            let item = cartItems.find(product => product.product_id === id);
+            if (item.quantity > 1) {
+              item.quantity--;
+              quantityElement.textContent = item.quantity;
+            } else {
+              const confirmDelete = confirm("Do you want delete this product ?");
+              if (confirmDelete) {
+                removeItemFromCart(id);
+              }
+            }
+            updateTotal();
+          });
+
+          increaseBtn.addEventListener("click", function () {
+            let item = cartItems.find(product => product.product_id === id);
+            item.quantity++;
+            quantityElement.textContent = item.quantity;
+            updateTotal();
+          });
+        });
+      }
+
+      function removeItemFromCart(productId) {
+        fetch(`/remove-item?customer_id=<%= customer_id %>&product_id=${productId}`, {
+          method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const itemIndex = cartItems.findIndex(item => item.product_id === productId);
+            if (itemIndex > -1) cartItems.splice(itemIndex, 1);
+            renderCart();
+            updateTotal();
+          } else {
+            alert("เกิดข้อผิดพลาดในการลบสินค้า");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+        });
+      }
+
+      renderCart();
+    });
+
+    function goToPayment() {
+      window.location.href = "/payment-address?customer_id=<%= customer_id %>";
+    }
+  </script>
+</body>
+</html>

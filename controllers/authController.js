@@ -7,6 +7,8 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
+//----------------------------------------SignIn------------------------------//
+
 exports.showSignIn = (req, res) => {
     res.render("signin", { error: null });
 };
@@ -35,7 +37,10 @@ exports.signIn = (req, res) => {
         res.redirect("/home");
     });
 };
+//----------------------------------------SignIn------------------------------//
 
+
+//----------------------------------------SignUp------------------------------//
 exports.showSignUp = (req, res) => {
     res.render("signup", { error: null });
 };
@@ -59,6 +64,7 @@ exports.signUp = (req, res) => {
         }
     });
 };
+//----------------------------------------SignUp------------------------------//
 
 exports.signOut = (req, res) => {
     res.clearCookie("token");

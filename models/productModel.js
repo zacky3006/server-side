@@ -1,14 +1,38 @@
-const db = require("../database/db");
+const db = require('../database/db');
 
-exports.getMaleProducts = (callback) => {
-    db.all("SELECT * FROM Product WHERE gender = 1 LIMIT 4", [], callback);
+exports.getAllProducts = () => {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM Product', [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
 };
 
-exports.getStudioProducts = (callback) => {
-    const sql = `
-        SELECT * FROM Product 
-        WHERE gender = 2 
-        AND category_id = (SELECT category_id FROM Category WHERE name = 'Jeans') 
-        LIMIT 4`;
-    db.all(sql, [], callback);
+exports.getProductsByCategory = (category) => {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM Product WHERE categories = ?', [category], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+// ดึงสินค้าโดย ID
+exports.getProductById = (id) => {
+    return new Promise((resolve, reject) => {
+        db.get('SELECT * FROM Product WHERE product_id = ?', [id], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
 };

@@ -1,57 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
-
 <body>
-    <nav>
-        <div>
-            <a href="/home">test</a>
+  <nav>
+    <div>
+      <a href="/home">FACTIO</a>
+    </div>
+  </nav>
+
+  <section>
+    <h2>BESTSELLERS</h2>
+    <div>
+      <% products.forEach(product => { %>
+        <div class="product-card">
+          <a href="/products/<%= product.product_id %>">
+            <img src="<%= product.image_url || '/default-image.jpg' %>" 
+                 alt="<%= product.name %>" class="product-img">
+          </a>
+          <a href="/products/<%= product.product_id %>">
+            <p><%= product.name %></p>
+          </a>
+          <span>$ <%= product.price %></span>
         </div>
-    </nav>
+      <% }) %>
+    </div>
+  </section>
 
-    <div></div>
-
-
-    <section>
-        <h2>BESTSELLERS</h2>
-        <div>
-            <% products.forEach(product => { %>
-                <div class="product-card">
-                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
-                    <p><%= product.name %></p>
-                    <span>$ <%= product.price %></span>
-                </div>
-            <% }) %>
+  <section>
+    <h2>STUDIO PRODUCTS</h2>
+    <div>
+      <% studioProducts.forEach(product => { %>
+        <div class="product-card">
+          <a href="/products/<%= product.product_id %>">
+            <img src="<%= product.image_url || '/default-image.jpg' %>" 
+                 alt="<%= product.name %>" class="product-img">
+          </a>
+          <a href="/products/<%= product.product_id %>">
+            <p><%= product.name %></p>
+          </a>
+          <span>$ <%= product.price %></span>
         </div>
-    </section>
+      <% }) %>
+    </div>
+  </section>
 
-    <section>
-        <div>
-            <% studioProducts.forEach(product => { %>
-                <div>
-                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
-                    <p><%= product.name %></p>
-                    <span>$ <%= product.price %></span>
-                </div>
-            <% }) %>
-        </div>
-    </section>
-
-    <footer>
-        <div>
-            <h4>สมาชิก</h4>
-            <p>66070150 นายภัทร์สพล ตั้งจรัสพณิชกุล</p>
-            <p>66070250 นายชัชวาลย์ ทองศิริกุล</p>
-            <p>660070313 นายสหรัฐ รัตนไชย</p>
-            <p>66070123 นายพงศ์พันธุ์ แก้วป้องปก</p>
-        </div>
-    </footer>
-
+  <footer>
+    <div>
+      <h4>สมาชิก</h4>
+      <p>66070150 นายภัทร์สพล ตั้งจรัสพณิชกุล</p>
+      <p>66070250 นายชัชวาลย์ ทองศิริกุล</p>
+      <p>66070313 นายสหรัฐ รัตนไชย</p>
+      <p>66070123 นายพงศ์พันธุ์ แก้วป้องปก</p>
+    </div>
+  </footer>
 </body>
-
 </html>
