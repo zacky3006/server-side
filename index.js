@@ -1,28 +1,32 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
-require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const cookieParser = require("cookie-parser");
-
-// middleware
+// Middleware
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-// routes
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const homeRoutes = require("./routes/homeRoutes");
+const productRoutes = require("./routes/productRoutes");
 
+// Use routes
 app.use("/", authRoutes);
 app.use("/", homeRoutes);
+app.use("/", productRoutes);
 
+// Root redirect to /signin
 app.get("/", (req, res) => res.redirect("/signin"));
 
+// Start server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });

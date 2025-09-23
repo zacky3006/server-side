@@ -4,25 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>FACTIO Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="home-styles.css">
 </head>
 
 <body>
-    <nav>
-        <div>
-            <a href="/home">test</a>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a id="logo" href="/home?customer_id=<%= customer_id %>">FACTIO</a>
+            <a href="/filter-woman?customer_id=<%= customer_id %>">ผู้หญิง</a>
+            <a href="/filter-man?customer_id=<%= customer_id %>">ผู้ชาย</a>
+        </div>
+        <div class="nav-right">
+    
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag?customer_id=<%= customer_id %>" ></a>
         </div>
     </nav>
 
-    <div></div>
+    <div class="banner">
+        <div class="banner-left">
+            <a href="/filter-woman?customer_id=<%= customer_id %>" class="button">สำหรับผู้หญิง</a>
+        </div>
+        <div class="text-center">
+            <p>Collection</p>
+            <h2>TELL ME MORE</h2>
+        </div>
+        <div class="banner-right">
+            <a href="/filter-man?customer_id=<%= customer_id %>" class="button">สำหรับผู้ชาย</a>
+        </div>
+    </div>
 
-
-    <section>
+    <!-- Bestseller Section -->
+    <section class="bestseller">
         <h2>BESTSELLERS</h2>
-        <div>
+        <button id="viewAllBtn" class="button">ดูเพิ่มเติม</button>
+
+        <div class="product-grid" id="productGrid">
             <% products.forEach(product => { %>
                 <div class="product-card">
-                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
+                    <div class="product-icons">
+                        <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
+                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                        </div>
+                    </div>
+                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
+
                     <p><%= product.name %></p>
                     <span>$ <%= product.price %></span>
                 </div>
@@ -30,27 +62,365 @@
         </div>
     </section>
 
-    <section>
-        <div>
-            <% studioProducts.forEach(product => { %>
-                <div>
-                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
-                    <p><%= product.name %></p>
-                    <span>$ <%= product.price %></span>
-                </div>
-            <% }) %>
+    <!-- Banner Section ด้านล่าง Bestseller -->
+    <section class="banner-bottom">
+        <div class="banner-content">
+            <p>NEW IN</p>
+            <h2>STUDIO COLLECTION</h2>
         </div>
     </section>
 
-    <footer>
-        <div>
-            <h4>สมาชิก</h4>
-            <p>66070150 นายภัทร์สพล ตั้งจรัสพณิชกุล</p>
-            <p>66070250 นายชัชวาลย์ ทองศิริกุล</p>
-            <p>660070313 นายสหรัฐ รัตนไชย</p>
-            <p>66070123 นายพงศ์พันธุ์ แก้วป้องปก</p>
+   <!-- Studio Collection (สำหรับผู้ชาย) -->
+   <section class="Studio">
+    <div class="product-grid" id="productGrid">
+        <% studioProducts.forEach(product => { %>
+            <div class="product-card">
+                <div class="product-icons">
+                    <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
+                        <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                    </div>
+                </div>
+                <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
+                <p><%= product.name %></p>
+                <span>$ <%= product.price %></span>
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+    <footer class="footer">
+        <div class="footer-column">
+            <h4>เกี่ยวกับเรา</h4>
+            <p >อาชีพ</p>
+            <p >คำถามที่พบบ่อย</p>
+            <p >การคืนสินค้า / การเปลี่ยนสินค้า</p>
+            <p >ติดต่อเรา</p>
+            <p >นโยบายความเป็นส่วนตัว</p>
+            <p >ซื้อของได้เร็วขึ้นด้วยแอป</p>
+        </div>
+
+        <div class="footer-column">
+            <h4>สมัครและรับส่วนลด</h4>
+            <p>สมัครสมาชิกเพื่อรับข้อเสนอพิเศษ ของรางวัลฟรี</p>
+    
+        </div>
+
+        <div class="footer-column">
+            <h4>ที่ตั้งร้านค้า</h4>
+            <p><strong>LAHORE</strong></p>
+            <p>22-A, Block K Gulberg-II Lahore, ปากีสถาน</p>
+            <p><strong>EMPORIUM MALL</strong></p>
+            <p>T01, Level 3</p>
+            <p><strong>ISLAMABAD</strong></p>
+            <p>Sumbal Rd, F-10 Markaz F10/4 Islamabad</p>
+            <p><strong>KARACHI</strong></p>
+            <p>LAMA at the mezzanine - Allure Beauty, Dolmen Mall Clifton</p>
         </div>
     </footer>
+
+    <div class="footer-bottom">
+        © 2024 Factio
+    </div>
+
+    <script>
+        
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const customerId = urlParams.get('customer_id');
+        const productGrid = document.getElementById("productGrid");
+        const viewAllBtn = document.getElementById("viewAllBtn");
+        let isExpanded = false;
+        let initialProducts = [];
+        let additionalProducts = [];
+
+        // ✅ โหลด 4 ชิ้นแรก แล้วเพิ่ม event ให้คลิกรูปสินค้าไปหน้า detail ได้เลย
+        fetch("/load-initial-products")
+            .then(response => response.json())
+            .then(products => {
+                initialProducts = getRandomProducts(products, 4);
+                renderProducts(initialProducts, false);
+            })
+            .catch(error => console.error("Error loading initial products:", error));
+
+        viewAllBtn.addEventListener("click", function () {
+            if (!isExpanded) {
+                fetch("/load-more-products")
+                    .then(response => response.json())
+                    .then(products => {
+                        additionalProducts = getRandomProducts(products, 8);
+                        renderProducts(additionalProducts, true);
+                        viewAllBtn.textContent = "ดูน้อยลง";
+                        isExpanded = true;
+                    })
+                    .catch(error => console.error("Error fetching products:", error));
+            } else {
+                document.querySelectorAll(".additional-product").forEach(el => el.remove());
+                viewAllBtn.textContent = "ดูเพิ่มเติม";
+                isExpanded = false;
+            }
+        });
+
+        function getRandomProducts(products, count) {
+            let shuffled = products.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function renderProducts(products, isAdditional) {
+            products.forEach(product => {
+                const card = document.createElement("div");
+                card.classList.add("product-card");
+                if (isAdditional) {
+                    card.classList.add("additional-product");
+                }
+
+                card.innerHTML = `
+                    <div class="product-icons">
+                        <div class="cart-icon-container" id="addToCart" onclick="addToCart(${product.product_id})">
+                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                        </div>
+                    </div>
+                    <img src="${product.image_url || '/default-image.jpg'}" alt="${product.name}" class="product-img" data-id="${product.product_id}">
+                    <p>${product.name}</p>
+                    <span>$ ${product.price}</span>
+                `;
+
+                productGrid.appendChild(card);
+            });
+
+            // ✅ เรียกใช้ทุกครั้งหลัง render เพื่อให้รูปภาพคลิกไปหน้า detail ได้
+            addClickEventToImages();
+        }
+
+
+        function addClickEventToImages() {
+            document.querySelectorAll(".product-img").forEach(img => {
+                img.onclick = function () {
+                    window.location.href = `/detail?product_id=${this.getAttribute("data-id")}&customer_id=${customerId}`;
+                };
+            });
+        }
+        document.body.addEventListener("click", function (event) {
+            if (event.target.classList.contains("product-img")) {
+                const productId = event.target.getAttribute("data-id");
+                window.location.href = `/detail?product_id=${productId}&customer_id=${customerId}`;
+            } 
+        });
+
+        document.body.addEventListener("click", function (event) {
+            if (event.target.classList.contains("fav-icon")) {
+                event.target.classList.toggle("fa-solid");
+                event.target.style.color = event.target.classList.contains("fa-solid") ? "red" : "black";
+            }
+        });
+    });
+
+    
+
+    function logout(event) {
+        event.preventDefault();
+        const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
+        if (confirmLogout) {
+            window.location.href = "/signin";
+        }
+    }
+</script>
+
+<script>
+    // ดึง customer_id จาก URL
+
+
+    function addToCart(product_id) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('customer_id'); // ✅ ดึงค่า customer_id จาก URL
+
+    if (!customerId) {
+        alert("Error: Customer ID is missing!");
+        return;
+    }
+
+    fetch(`/get-cart?customer_id=${customerId}`)
+        .then(response => response.json())
+        .then(cartItems => {
+            const existingItem = cartItems.find(item => item.product_id == product_id);
+            if (existingItem) {
+                // ถ้าสินค้ามีอยู่แล้ว ให้เพิ่มจำนวน
+                updateCart(product_id, existingItem.quantity + 1, customerId);
+            } else {
+                // ถ้าไม่มีสินค้าอยู่ ให้เพิ่มใหม่
+                fetch("/add-to-cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        product_id: product_id,
+                        quantity: 1
+                    })
+                }).then(response => response.text())
+                    .then(data => alert("Added to cart"));
+            }
+        });
+}
+
+function updateCart(product_id, newQuantity, customerId) {
+    fetch("/update-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            customer_id: customerId,
+            product_id: product_id,
+            quantity: newQuantity
+        })
+    }).then(response => response.text())
+        .then(data => alert("Added to cart"));
+}
+//==================================================================================================================
+document.addEventListener("DOMContentLoaded", function () {
+    const productGrid = document.getElementById("productGrid");
+    const viewAllBtn = document.getElementById("viewAllBtn");
+    let isExpanded = false;
+    let initialProducts = [];
+    let additionalProducts = [];
+
+    fetch("/load-initial-products")
+        .then(response => response.json())
+        .then(products => {
+            initialProducts = getRandomProducts(products, 4);
+            renderProducts(initialProducts, false);
+        })
+        .catch(error => console.error("Error loading initial products:", error));
+
+    viewAllBtn.addEventListener("click", function () {
+        if (!isExpanded) {
+            fetch("/load-more-products")
+                .then(response => response.json())
+                .then(products => {
+                    additionalProducts = getRandomProducts(products, 8);
+                    renderProducts(additionalProducts, true);
+                    viewAllBtn.textContent = "ดูน้อยลง";
+                    isExpanded = true;
+                })
+                .catch(error => console.error("Error fetching products:", error));
+        } else {
+            document.querySelectorAll(".additional-product").forEach(el => el.remove());
+            viewAllBtn.textContent = "ดูเพิ่มเติม";
+            isExpanded = false;
+        }
+    });
+
+    function getRandomProducts(products, count) {
+        return products.sort(() => 0.5 - Math.random()).slice(0, count);
+    }
+
+    function renderProducts(products, isAdditional) {
+        products.forEach(product => {
+            const card = document.createElement("div");
+            card.classList.add("product-card");
+            if (isAdditional) card.classList.add("additional-product");
+
+            card.innerHTML = `
+                <div class="product-icons">
+                    <div class="cart-icon-container">
+                        <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                    </div>
+                </div>
+                <img src="${product.image_url || '/default-image.jpg'}" alt="${product.name}" class="product-img" data-id="${product.product_id}">
+                <p>${product.name}</p>
+                <span>$ ${product.price}</span>
+            `;
+
+            productGrid.appendChild(card);
+        });
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('customer_id');
+
+    productGrid.addEventListener("click", function (event) {
+        if (event.target.classList.contains("product-img")) {
+            const productId = event.target.dataset.id;
+            window.location.href = `/detail?product_id=${productId}&customer_id=${customerId}`;
+        }
+
+        if (event.target.classList.contains("fav-icon")) {
+            const favIcon = event.target;
+            const productCard = favIcon.closest(".product-card");
+            const productId = productCard.querySelector(".product-img").dataset.id;
+
+            if (!customerId) {
+                alert("Customer ID is missing!");
+                return;
+            }
+
+            fetch("/toggle-favorite", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customer_id: customerId, product_id: productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.favorited) {
+                        favIcon.classList.remove("fa-regular");
+                        favIcon.classList.add("fa-solid");
+                        favIcon.style.color = "red";
+                    } else {
+                        favIcon.classList.remove("fa-solid");
+                        favIcon.classList.add("fa-regular");
+                        favIcon.style.color = "black";
+                    }
+                } else {
+                    alert("Failed to update favorite.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    });
+});
+//===================================================================================================
+document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('customer_id');
+    const productGridStudio = document.querySelector(".Studio .product-grid");
+
+    productGridStudio.addEventListener("click", function (event) {
+        if (event.target.classList.contains("fav-icon")) {
+            const favIcon = event.target;
+            const productId = favIcon.dataset.id;
+
+            if (!customerId) {
+                alert("Customer ID is missing!");
+                return;
+            }
+
+            fetch("/toggle-favorite", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customer_id: customerId, product_id: productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.favorited) {
+                        favIcon.classList.remove("fa-regular");
+                        favIcon.classList.add("fa-solid");
+                        favIcon.style.color = "red";
+                    } else {
+                        favIcon.classList.remove("fa-solid");
+                        favIcon.classList.add("fa-regular");
+                        favIcon.style.color = "black";
+                    }
+                } else {
+                    alert("Failed to update favorite.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    });
+});
+
+</script>
 
 </body>
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= product.name %> - Detail</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav>
+    <a href="/home">FACTIO</a>
+    <a href="/shopping-bag?customer_id=<%= customer_id %>">Shopping Bag</a>
+  </nav>
+
+  <section>
+    <h1><%= product.name %></h1>
+    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>">
+    <p>Price: $<%= product.price %></p>
+    <p>Description: <%= product.description || 'No description available.' %></p>
+
+    <form method="POST" action="/add-to-cart">
+      <input type="hidden" name="customer_id" value="<%= customer_id %>">
+      <input type="hidden" name="product_id" value="<%= product.product_id %>">
+      <button type="submit">Add to Cart</button>
+    </form>
+
+    <a href="/home">← Back to Home</a>
+  </section>
+</body>
+</html>
