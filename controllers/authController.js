@@ -24,7 +24,6 @@ exports.signIn = (req, res) => {
         res.redirect("/home");
     });
 };
-//----------------------------------------SignIn------------------------------//
 
 exports.showSignUp = (req, res) => res.render("signup", { error: null });
 
@@ -47,7 +46,6 @@ exports.signUp = (req, res) => {
         }
     });
 };
-//----------------------------------------SignUp------------------------------//
 
 exports.signOut = (req, res) => {
     res.clearCookie("token");
