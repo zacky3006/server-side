@@ -1,13 +1,9 @@
 const db = require("../database/db");
 
-// หน้า Home (default)
 exports.showHome = (req, res) => {
     const customer_id = req.user.customer_id;
 
-    // ดึงสินค้าผู้หญิง (4 ชิ้นแรก)
     const sqlWomen = "SELECT * FROM Product WHERE gender = 1 LIMIT 4";
-
-    // ดึงสินค้าผู้ชาย (Jeans 4 ชิ้นแรก)
     const sqlMen = `
         SELECT * FROM Product 
         WHERE gender = 2 AND category_id = (SELECT category_id FROM Category WHERE name = 'Jeans')
@@ -15,10 +11,9 @@ exports.showHome = (req, res) => {
 
     db.all(sqlWomen, [], (err, products) => {
         if (err) return res.send("Database error.");
-        db.all(sqlMen, [], (err, menProducts) => {
+        db.all(sqlMen, [], (err, studioProducts) => {
             if (err) return res.send("Database error.");
-            
-            res.render("home", { products, studioProducts: menProducts, customer_id });
+            res.render("home", { products, studioProducts, customer_id }); // ✅ customer_id จาก JWT
         });
     });
 };

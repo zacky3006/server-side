@@ -14,20 +14,18 @@
 </head>
 
 <body>
-
     <nav class="navbar">
         <div class="nav-left">
-            <a id="logo" href="/home?customer_id=<%= customer_id %>">FACTIO</a>
-            <a href="/filter-woman?customer_id=<%= customer_id %>">ผู้หญิง</a>
-            <a href="/filter-man?customer_id=<%= customer_id %>">ผู้ชาย</a>
+            <a id="logo" href="/home">FACTIO</a>
+            <a href="/filter-woman">ผู้หญิง</a>
+            <a href="/filter-man">ผู้ชาย</a>
         </div>
         <div class="nav-right">
-       
             <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
-            <a class="fa-regular fa-heart icon" href="/favorite?customer_id=<%= customer_id %>"></a>
-            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag?customer_id=<%= customer_id %>" ></a>
+            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag"></a>
         </div>
     </nav>
+
 
     <!-- ฟอร์มเลือก Category, Color และ Price -->
     <div class="container">
