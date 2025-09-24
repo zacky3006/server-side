@@ -1,71 +1,91 @@
 const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
+const async = require("async");
+
 
 // แสดงหน้าตะกร้า
-exports.showCartPage = (req, res) => {
+exports.showCartPage = async (req, res) => {
     const customer_id = req.user?.customer_id || req.query.customer_id;
     if (!customer_id) return res.status(401).send("Please sign in first.");
 
-    Cart.getByCustomer(customer_id, (err, cartItems) => {
-        if (err) return res.status(500).send("Database error.");
+    try {
+        const cartItems = await Cart.getByCustomerAsync(customer_id);
         res.render("shopping-bag", { customer_id, cartItems });
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error.");
+    }
 };
 
-
 // เพิ่มสินค้าในตะกร้า
-exports.addToCart = (req, res) => {
+exports.addToCart = async (req, res) => {
     const { product_id, quantity } = req.body;
     const customer_id = req.user?.customer_id || req.body.customer_id;
     if (!customer_id || !product_id || !quantity) return res.status(400).send("Invalid request data.");
 
-    Cart.addOrUpdate(customer_id, product_id, quantity, (err) => {
-        if (err) return res.status(500).send("Database error");
+    try {
+        await Cart.addOrUpdateAsync(customer_id, product_id, quantity);
         res.send("Added to cart");
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+    }
 };
 
 // ดึงข้อมูลตะกร้า (JSON)
-exports.getCartItems = (req, res) => {
+exports.getCartItems = async (req, res) => {
     const customer_id = req.user?.customer_id || req.query.customer_id;
     if (!customer_id) return res.status(401).send("Please sign in first.");
 
-    Cart.getByCustomer(customer_id, (err, rows) => {
-        if (err) return res.status(500).send("Database error");
-        res.json(rows);
-    });
+    try {
+        const cartItems = await Cart.getByCustomerAsync(customer_id);
+        res.json(cartItems);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+    }
 };
 
 // อัพเดตจำนวนสินค้า
-exports.updateCart = (req, res) => {
+exports.updateCart = async (req, res) => {
     const { product_id, quantity } = req.body;
     const customer_id = req.user?.customer_id || req.body.customer_id;
     if (!customer_id || !product_id || !quantity) return res.status(400).send("Invalid request data.");
 
-    Cart.updateQuantity(customer_id, product_id, quantity, (err) => {
-        if (err) return res.status(500).send("Database error");
+    try {
+        await Cart.updateQuantityAsync(customer_id, product_id, quantity);
         res.send("Cart updated");
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+    }
 };
 
 // ลบสินค้าออกจากตะกร้า
-exports.removeCartItem = (req, res) => {
+exports.removeCartItem = async (req, res) => {
     const { product_id } = req.body;
     const customer_id = req.user?.customer_id || req.body.customer_id;
     if (!customer_id || !product_id) return res.status(400).send("Missing parameters.");
 
-    Cart.remove(customer_id, product_id, (err) => {
-        if (err) return res.status(500).send("Database error");
+    try {
+        await Cart.removeAsync(customer_id, product_id);
         res.json({ success: true });
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
 };
 
 // ล้างตะกร้าทั้งหมด
-exports.clearCart = (req, res) => {
+exports.clearCart = async (req, res) => {
     const customer_id = req.user?.customer_id || req.body.customer_id;
     if (!customer_id) return res.status(400).json({ success: false, message: "Missing customer_id" });
 
-    Cart.clear(customer_id, (err) => {
-        if (err) return res.status(500).json({ success: false });
+    try {
+        await Cart.clearAsync(customer_id);
         res.json({ success: true });
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
 };

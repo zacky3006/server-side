@@ -2,76 +2,92 @@ const Product = require("../models/productModel");
 const Cart = require("../models/cartModel");
 
 // Detail Page
-exports.detailPage = (req, res) => {
-    const { product_id } = req.query;
-    const customer_id = req.user.customer_id;
+exports.detailPage = async (req, res) => {
+    try {
+        const { product_id } = req.query;
+        if (!req.user) return res.status(401).send("Unauthorized");
+        const customer_id = req.user.customer_id;
 
-    Product.getById(product_id, (err, product) => {
-        if (err || !product) return res.send("Product not found");
+        const product = await Product.getByIdAsync(product_id);
+        if (!product) return res.status(404).send("Product not found");
 
-        Product.getAll((err, recommended) => {
-            if (err) return res.send("Error fetching recommended");
-            res.render("detail", { product, recommendedProducts: recommended.slice(0,4), customer_id });
+        const recommended = await Product.getAllAsync();
+        res.render("detail", { 
+            product, 
+            recommendedProducts: recommended.slice(0, 4), 
+            customer_id 
         });
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
 };
 
 // Cart
-exports.addToCart = (req, res) => {
-    const { product_id, quantity } = req.body;
-    const customer_id = req.user.customer_id;
-
-    Cart.addOrUpdate(customer_id, product_id, quantity, (err) => {
-        if (err) return res.status(500).send("Database error");
-        res.send("Added to cart");
-    });
-};
-
-exports.getCart = (req, res) => {
-    const customer_id = req.user.customer_id;
-    Cart.getByCustomer(customer_id, (err, rows) => {
-        if (err) return res.status(500).send("Database error");
-        res.json(rows);
-    });
-};
-
-exports.updateCart = (req, res) => {
-    const { product_id, quantity } = req.body;
-    const customer_id = req.user.customer_id;
-
-    Cart.updateQuantity(customer_id, product_id, quantity, (err) => {
-        if (err) return res.status(500).send("Database error");
-        res.send("Cart updated");
-    });
-};
-
-exports.removeCartItem = (req, res) => {
-    const { product_id } = req.body;
-    const customer_id = req.user.customer_id;
-
-    Cart.remove(customer_id, product_id, (err) => {
-        if (err) return res.status(500).send("Database error");
-        res.json({ success: true });
-    });
-};
-
-exports.clearCart = (req, res) => {
-    const customer_id = req.user.customer_id;
-    Cart.clear(customer_id, (err) => {
-        if (err) return res.status(500).json({ success: false });
-        res.json({ success: true });
-    });
-};
-
-exports.getDetail = async (req, res) => {
+exports.addToCart = async (req, res) => {
     try {
-        const product = await Product.getProductById(req.params.id);
-        if (!product) {
-            return res.status(404).send('Product not found');
-        }
-        res.render('product-detail', { product });
+        if (!req.user) return res.status(401).send("Unauthorized");
+        const { product_id, quantity } = req.body;
+        const customer_id = req.user.customer_id;
+
+        await Cart.addOrUpdateAsync(customer_id, product_id, quantity);
+        res.send("Added to cart");
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        res.status(500).send("Database error");
+    }
+};
+
+exports.getCart = async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).send("Unauthorized");
+        const customer_id = req.user.customer_id;
+
+        const cartItems = await Cart.getByCustomerAsync(customer_id);
+        res.json(cartItems);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+    }
+};
+
+exports.updateCart = async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).send("Unauthorized");
+        const { product_id, quantity } = req.body;
+        const customer_id = req.user.customer_id;
+
+        await Cart.updateQuantityAsync(customer_id, product_id, quantity);
+        res.send("Cart updated");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+    }
+};
+
+exports.removeCartItem = async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).send("Unauthorized");
+        const { product_id } = req.body;
+        const customer_id = req.user.customer_id;
+
+        await Cart.removeAsync(customer_id, product_id);
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
+};
+
+exports.clearCart = async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).send("Unauthorized");
+        const customer_id = req.user.customer_id;
+
+        await Cart.clearAsync(customer_id);
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
     }
 };

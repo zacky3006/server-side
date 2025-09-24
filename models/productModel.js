@@ -1,34 +1,69 @@
 const db = require("../database/db");
 
 const Product = {
-    getAll: (callback) => {
-        db.all("SELECT * FROM Product", [], callback);
-    },
-
-    getById: (product_id, callback) => {
-        db.get("SELECT * FROM Product WHERE product_id = ?", [product_id], callback);
-    },
-
-    create: (data, callback) => {
-        const { name, description, image_url, price, color, gender, categories, category_id } = data;
-        const sql = `INSERT INTO Product (name, description, image_url, price, color, gender, categories, category_id)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-        db.run(sql, [name, description, image_url, price, color, gender, categories, category_id], function(err) {
-            callback(err, this ? this.lastID : null);
+    getAll: () => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT product_id, name, description, image_url, price, color, gender, categories, category_id
+                FROM Product
+            `;
+            db.all(sql, [], (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows);
+            });
         });
     },
 
-    update: (data, callback) => {
-        const { product_id, name, price, description, image_url } = data;
-        const sql = "UPDATE Product SET name=?, price=?, description=?, image_url=? WHERE product_id=?";
-        db.run(sql, [name, price, description, image_url, product_id], function(err) {
-            callback(err, this.changes);
+    getById: (product_id) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT product_id, name, description, image_url, price, color, gender, categories, category_id
+                FROM Product
+                WHERE product_id = ?
+            `;
+            db.get(sql, [product_id], (err, row) => {
+                if (err) return reject(err);
+                resolve(row);
+            });
         });
     },
 
-    delete: (product_id, callback) => {
-        db.run("DELETE FROM Product WHERE product_id = ?", [product_id], function(err) {
-            callback(err, this.changes);
+    create: (data) => {
+        return new Promise((resolve, reject) => {
+            const { name, description, image_url, price, color, gender, categories, category_id } = data;
+            const sql = `
+                INSERT INTO Product (name, description, image_url, price, color, gender, categories, category_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            db.run(sql, [name, description, image_url, price, color, gender, categories, category_id], function(err) {
+                if (err) return reject(err);
+                resolve(this.lastID);
+            });
+        });
+    },
+
+    update: (data) => {
+        return new Promise((resolve, reject) => {
+            const { product_id, name, description, image_url, price, color, gender, categories, category_id } = data;
+            const sql = `
+                UPDATE Product
+                SET name=?, description=?, image_url=?, price=?, color=?, gender=?, categories=?, category_id=?
+                WHERE product_id=?
+            `;
+            db.run(sql, [name, description, image_url, price, color, gender, categories, category_id, product_id], function(err) {
+                if (err) return reject(err);
+                resolve(this.changes);
+            });
+        });
+    },
+
+    delete: (product_id) => {
+        return new Promise((resolve, reject) => {
+            const sql = `DELETE FROM Product WHERE product_id = ?`;
+            db.run(sql, [product_id], function(err) {
+                if (err) return reject(err);
+                resolve(this.changes);
+            });
         });
     }
 };
