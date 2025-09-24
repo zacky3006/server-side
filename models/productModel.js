@@ -1,7 +1,7 @@
 const db = require("../database/db");
 
 const Product = {
-    getAll: () => {
+    getAllAsync: () => {
         return new Promise((resolve, reject) => {
             const sql = `
                 SELECT product_id, name, description, image_url, price, color, gender, categories, category_id
@@ -14,7 +14,7 @@ const Product = {
         });
     },
 
-    getById: (product_id) => {
+    getByIdAsync: (product_id) => {
         return new Promise((resolve, reject) => {
             const sql = `
                 SELECT product_id, name, description, image_url, price, color, gender, categories, category_id
