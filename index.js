@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const db = require("./database/db");
-
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,7 +26,7 @@ app.use("/", authRoutes);
 app.use("/", homeRoutes);
 app.use("/", productRoutes);
 app.use("/admin", adminRoutes);
-
+app.use("/payment", paymentRoutes);
 
 // Root redirect to /signin
 app.get("/", (req, res) => res.redirect("/signin"));

@@ -205,10 +205,10 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "/signin"; // ไปที่หน้า Sign In
         }
     }
-
+    const CUSTOMER_ID = "<%= customer_id %>";
     function goToPayment() {
-        window.location.href = "/payment-address?customer_id=<%= customer_id %>";
-    }
+        window.location.href = `/payment?customer_id=${CUSTOMER_ID}`;
+        }
 
 
 </script>
