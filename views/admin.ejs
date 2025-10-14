@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="/admin-styles.css"> 
 </head>
 
 <body>
@@ -46,7 +46,6 @@
             <button id="next-page">&gt;</button>
         </div>
     </div>
-
     <script>
         let currentPage = 1;
         const itemsPerPage = 12;
@@ -54,108 +53,127 @@
 
         function fetchProducts() {
             const gender = document.getElementById("gender-filter").value;
-            fetch(`/get-products?gender=${gender}`)
-                .then(response => response.json())
+            // 1. แก้ไข URL ให้ตรงกับ API ใหม่
+            fetch(`/admin/products?gender=${gender}`)
+                .then(response => {
+                    if (!response.ok) {
+                        // ถ้า Server ตอบกลับมาเป็น Error (เช่น 401 Unauthorized, 403 Forbidden)
+                        if (response.status === 401 || response.status === 403) {
+                             // Redirect ไปหน้า login เพราะ Token อาจจะหมดอายุ
+                            window.location.href = '/signin';
+                        }
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(products => {
                     allProducts = products;
+                    currentPage = 1; 
                     renderProducts();
                 })
-                .catch(error => console.error("Error fetching products:", error));
+                .catch(error => {
+                    console.error("Error fetching products:", error);
+                    // อาจจะแสดงข้อความบางอย่างบนหน้าจอว่าโหลดข้อมูลล้มเหลว
+                    document.getElementById("product-grid").innerHTML = "<p>ไม่สามารถโหลดข้อมูลสินค้าได้</p>";
+                });
+        }
+
+        function renderProducts() {
+            const productGrid = document.getElementById("product-grid");
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = allProducts.slice(start, end);
+
+            // ใช้ .map().join('') เพื่อประสิทธิภาพที่ดีกว่า
+            const productsHtml = paginatedItems.map(product => `
+                <div class="product-card">
+                    <img src="${product.image_url}" onerror="this.onerror=null; this.src='/images/default.png';" class="product-img">
+                    <p>${product.name}</p>
+                    <span class="price">$${product.price}</span>
+                    <div class="buttons">
+                        <button class="edit" onclick="goToEditProduct(${product.product_id})">แก้ไข</button>
+                        <button class="delete" onclick="deleteProduct(${product.product_id})">ลบ</button>
+                    </div>
+                </div>
+            `).join('');
+
+            productGrid.innerHTML = productsHtml;
+            updatePagination();
+        }
+
+        function deleteProduct(productId) {
+            if (!confirm("คุณแน่ใจมั้ยที่ต้องการจะลบสินค้าชิ้นนี้?")) {
+                return;
+            }
+
+            // 2. แก้ไข Method และ URL การลบให้ตรงกับ API ใหม่
+            fetch(`/admin/products/${productId}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("ลบสินค้าสำเร็จ!");
+                    fetchProducts(); 
+                } else {
+                    alert("ลบสินค้าล้มเหลว: " + data.message);
+                }
+            })
+            .catch(error => console.error("เกิดข้อผิดพลาดในการลบสินค้า:", error));
         }
 
         function updatePagination() {
             document.getElementById("page-info").innerText = currentPage;
             document.getElementById("prev-page").disabled = currentPage === 1;
-            document.getElementById("next-page").disabled = currentPage * itemsPerPage >= allProducts.length;
+            const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+            document.getElementById("next-page").disabled = currentPage >= totalPages;
         }
 
-        document.getElementById("prev-page").addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderProducts();
-            }
-        });
+        // --- ส่วน Event Listeners เหมือนเดิม แต่จัดระเบียบเล็กน้อย ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById("prev-page").addEventListener("click", () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderProducts();
+                }
+            });
 
-        document.getElementById("next-page").addEventListener("click", () => {
-            if (currentPage * itemsPerPage < allProducts.length) {
-                currentPage++;
-                renderProducts();
-            }
-        });
+            document.getElementById("next-page").addEventListener("click", () => {
+                const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderProducts();
+                }
+            });
+            
+            document.getElementById("gender-filter").addEventListener("change", fetchProducts);
 
-        document.getElementById("gender-filter").addEventListener("change", () => {
-            currentPage = 1;
+            // เริ่มดึงข้อมูลสินค้าเมื่อหน้าเว็บโหลดเสร็จ
             fetchProducts();
         });
 
-        fetchProducts();
-
-        // LOGOUT FUNCTION
+        // --- ฟังก์ชันอื่นๆ เหมือนเดิม ---
         function logout(event) {
             event.preventDefault();
             const confirmLogout = confirm("Do you want to Logout ?");
             if (confirmLogout) {
-                window.location.href = "/signin";
+                // แนะนำให้มี API สำหรับ Logout
+                fetch('/auth/logout', { method: 'POST' })
+                    .finally(() => {
+                        window.location.href = "/signin";
+                    });
             }
         }
 
         function goToCreateProduct() {
-            window.location.href = '/create-product'; 
+            // เราอาจจะยังไม่มี Route นี้ แต่เตรียมไว้ก่อน
+             window.location.href = '/admin/products/new'; 
         }
 
         function goToEditProduct(productId) {
+            // เราอาจจะยังไม่มี Route นี้ แต่เตรียมไว้ก่อน
             window.location.href = `/edit-product?product_id=${productId}`;
         }
-//============================================================================================================================================        
-        
-        function renderProducts() {
-    const productGrid = document.getElementById("product-grid");
-    productGrid.innerHTML = "";
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    const paginatedItems = allProducts.slice(start, end);
-
-    paginatedItems.forEach(product => {
-        const productCard = `
-        <div class="product-card">
-            <img src="${product.image_url}" onerror="this.onerror=null; this.src='/images/default.png';" class="product-img">
-            <p>${product.name}</p>
-            <span class="price">$${product.price}</span>
-            <div class="buttons">
-                <button class="edit" onclick="goToEditProduct(${product.product_id})">แก้ไข</button>
-                <button class="delete" onclick="deleteProduct(${product.product_id})">ลบ</button>
-            </div>
-        </div>
-    `;
-        productGrid.innerHTML += productCard;
-    });
-    updatePagination();
-}
-
-function deleteProduct(productId) {
-    if (!confirm("คุณแน่ใจมั้ยที่ต้องการจะลบสินค้าชิ้นนี้?")) {
-        return;
-    }
-
-    fetch("/delete-product", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ product_id: productId })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("ลบสินค้าสำเร็จ!");
-            fetchProducts(); // Refresh product list
-        } else {
-            alert("ลบสินค้าล้มเหลว: " + data.message);
-        }
-    })
-    .catch(error => console.error("เกิดข้อผิดพลาดในการลบสินค้า:", error));
-}
     </script>
 </body>
-
 </html>

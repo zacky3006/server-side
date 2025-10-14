@@ -25,7 +25,7 @@ const adminRoutes = require("./routes/admin");
 app.use("/", authRoutes);
 app.use("/", homeRoutes);
 app.use("/", productRoutes);
-app.use("/", adminRoutes);
+app.use("/admin", adminRoutes);
 
 
 // Root redirect to /signin
