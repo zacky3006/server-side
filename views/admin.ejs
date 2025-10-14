@@ -171,8 +171,8 @@
         }
 
         function goToEditProduct(productId) {
-            // เราอาจจะยังไม่มี Route นี้ แต่เตรียมไว้ก่อน
-            window.location.href = `/edit-product?product_id=${productId}`;
+            // ลิงก์ไปยัง Route ที่เราสร้างไว้ใน routes/admin.js
+            window.location.href = `/admin/products/${productId}/edit`;
         }
     </script>
 </body>

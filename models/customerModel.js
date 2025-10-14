@@ -1,24 +1,36 @@
 const db = require("../database/db");
 
 const Customer = {
-    create: (email, password, callback) => {
-        const sql = "INSERT INTO Customer (email, password, role) VALUES (?, ?, 'customer')";
-        db.run(sql, [email, password], function (err) {
-            callback(err, this ? this.lastID : null);
+    // สร้างลูกค้าใหม่
+    create: (email, password) => {
+        return new Promise((resolve, reject) => {
+            const sql = "INSERT INTO Customer (email, password, role) VALUES (?, ?, 'customer')";
+            db.run(sql, [email, password], function(err) {
+                if (err) reject(err);
+                else resolve(this.lastID);
+            });
         });
     },
 
-    findByEmail: (email, callback) => {
-        const sql = "SELECT * FROM Customer WHERE email = ?";
-        db.get(sql, [email], (err, row) => {
-            callback(err, row);
+    // หา customer ด้วย email
+    findByEmail: (email) => {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM Customer WHERE email = ?";
+            db.get(sql, [email], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
         });
     },
 
-    findById: (customer_id, callback) => {
-        const sql = "SELECT * FROM Customer WHERE customer_id = ?";
-        db.get(sql, [customer_id], (err, row) => {
-            callback(err, row);
+    // หา customer ด้วย customer_id
+    findById: (customer_id) => {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM Customer WHERE customer_id = ?";
+            db.get(sql, [customer_id], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
         });
     }
 };

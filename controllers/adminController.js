@@ -13,7 +13,6 @@ const s3 = new AWS.S3({
 const getKeyFromUrl = (url) => {
     try {
         const urlObject = new URL(url);
-        // The key is the pathname without the leading slash
         return urlObject.pathname.substring(1);
     } catch (e) {
         console.error("Invalid URL:", url);
@@ -80,15 +79,15 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// --- [ADDED] --- Function to update a product
 exports.updateProduct = async (req, res) => {
     try {
-        const { product_id, name, price, description, category_id, color, gender } = req.body;
+        const productId = req.params.id; // <-- รับ ID จาก URL
+        const { name, price, description, category_id, color, gender } = req.body;
         let imageUrl;
 
-        // Step 1: Find the old image URL from DB
+        // Step 1: ค้นหาข้อมูลสินค้าเดิม (โดยเฉพาะ URL รูปเก่า)
         const product = await new Promise((resolve, reject) => {
-            db.get("SELECT image_url FROM Product WHERE product_id = ?", [product_id], (err, row) => {
+            db.get("SELECT image_url FROM Product WHERE product_id = ?", [productId], (err, row) => {
                 if (err) reject(err);
                 resolve(row);
             });
@@ -98,9 +97,9 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
         
-        // Step 2: Check if a new file is uploaded
+        // Step 2: ตรวจสอบว่ามีการอัปโหลดไฟล์รูปใหม่หรือไม่
         if (req.file) {
-            // 2a. Upload the new image
+            // 2a. อัปโหลดรูปใหม่ขึ้น S3
             const newFileKey = `Picture/${uuidv4()}_${req.file.originalname}`;
             const uploadParams = {
                 Bucket: process.env.AWS_BUCKET_NAME,
@@ -112,22 +111,22 @@ exports.updateProduct = async (req, res) => {
             const uploadResult = await s3.upload(uploadParams).promise();
             imageUrl = uploadResult.Location;
 
-            // 2b. Delete the old image from S3
+            // 2b. [สำคัญ] ลบรูปเก่าออกจาก S3
             const oldFileKey = getKeyFromUrl(product.image_url);
             if (oldFileKey) {
                 await s3.deleteObject({ Bucket: process.env.AWS_BUCKET_NAME, Key: oldFileKey }).promise();
             }
         } else {
-            // If no new file, keep the old image URL
+            // ถ้าไม่มีการอัปโหลดไฟล์ใหม่ ให้ใช้ URL รูปเดิม
             imageUrl = product.image_url;
         }
 
-        // Step 3: Update the database
+        // Step 3: อัปเดตข้อมูลใน Database
         const sql = `UPDATE Product SET
             name = ?, price = ?, description = ?, category_id = ?, color = ?, gender = ?, image_url = ?
             WHERE product_id = ?`;
 
-        db.run(sql, [name, price, description, category_id, color, gender, imageUrl, product_id], function(err) {
+        db.run(sql, [name, price, description, category_id, color, gender, imageUrl, productId], function(err) {
             if (err) return res.status(500).json({ success: false, message: err.message });
             res.json({ success: true, message: "Product updated successfully" });
         });
@@ -138,29 +137,24 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-
 // --- [IMPROVED] --- Function to delete a product
 exports.deleteProduct = async (req, res) => {
     try {
-        const { product_id } = req.body;
+        const productId = req.params.id; // <-- รับ ID จาก URL
 
-        // Step 1: Get the image_url from the database BEFORE deleting the record
-        db.get("SELECT image_url FROM Product WHERE product_id = ?", [product_id], async (err, row) => {
+        // Step 1: ดึง URL รูปภาพจาก DB ก่อนที่จะลบข้อมูล
+        db.get("SELECT image_url FROM Product WHERE product_id = ?", [productId], async (err, row) => {
             if (err) return res.status(500).json({ success: false, message: err.message });
             if (!row) return res.status(404).json({ success: false, message: "Product not found" });
 
-            // Step 2: Delete the image from S3
+            // Step 2: [สำคัญ] ลบรูปภาพออกจาก S3
             const fileKey = getKeyFromUrl(row.image_url);
             if (fileKey) {
-                const deleteParams = {
-                    Bucket: process.env.AWS_BUCKET_NAME,
-                    Key: fileKey,
-                };
-                await s3.deleteObject(deleteParams).promise();
+                await s3.deleteObject({ Bucket: process.env.AWS_BUCKET_NAME, Key: fileKey }).promise();
             }
 
-            // Step 3: Delete the product from the database
-            db.run("DELETE FROM Product WHERE product_id = ?", [product_id], function (err) {
+            // Step 3: ลบข้อมูลสินค้าออกจาก Database
+            db.run("DELETE FROM Product WHERE product_id = ?", [productId], function (err) {
                 if (err) return res.status(500).json({ success: false, message: err.message });
                 res.json({ success: true, message: "Product deleted successfully" });
             });
@@ -173,4 +167,19 @@ exports.deleteProduct = async (req, res) => {
 exports.showCreateProductPage = (req, res) => {
     // ทำหน้าที่ render ไฟล์ create-products.ejs ส่งกลับไปให้ผู้ใช้
     res.render("create-product"); 
+};
+exports.showEditProductPage = (req, res) => {
+    const productId = req.params.id;
+    const sql = "SELECT * FROM Product WHERE product_id = ?";
+    db.get(sql, [productId], (err, row) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Server error");
+        }
+        if (!row) {
+            return res.status(404).send("Product not found");
+        }
+        // Render หน้า edit-product และส่งข้อมูลสินค้า (row) ไปด้วย
+        res.render("edit-product", { product: row });
+    });
 };

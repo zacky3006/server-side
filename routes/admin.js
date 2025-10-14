@@ -18,6 +18,22 @@ router.get("/products/new", adminController.showCreateProductPage);
 // Route สำหรับดึงข้อมูลสินค้าทั้งหมด (GET /admin/products)
 router.get("/products", adminController.getProducts);
 
+// [เพิ่มใหม่] Route สำหรับ "แสดงหน้าฟอร์มแก้ไข"
+router.get("/products/:id/edit", adminController.showEditProductPage);
+
+// Route สำหรับ "รับข้อมูลเพื่ออัปเดต" (อันเดิมที่เราทำไว้ ถูกต้องแล้ว)
+router.put(
+    "/products/:id", 
+    upload.single("image"), 
+    adminController.updateProduct
+);
+
+// Route สำหรับ "ลบ" (อันเดิมที่เราทำไว้ ถูกต้องแล้ว)
+router.delete(
+    "/products/:id",
+    adminController.deleteProduct
+);
+
 // Route สำหรับ "รับข้อมูล" จากฟอร์มเพื่อสร้างสินค้า (POST /admin/products)
 router.post(
     "/products",

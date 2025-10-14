@@ -48,7 +48,10 @@
              <span id="total" class="span">ราคารวม : 3390</span>
         </div>
         
-        <button class="button" onclick="goToPayment()">ชำระเงิน</button>
+        <form id="paymentForm" action="/payment" method="POST">
+            <input type="hidden" name="customer_id" value="<%= customer_id %>">
+            <button type="submit" class="button">ชำระเงิน</button>
+        </form>
 
 
     </div>
