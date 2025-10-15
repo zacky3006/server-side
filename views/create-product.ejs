@@ -76,7 +76,7 @@
                 // แนะนำให้มี API สำหรับ Logout
                 fetch('/auth/logout', { method: 'POST' })
                     .finally(() => {
-                        window.location.href = "/signin";
+                        window.location.href = "/signout";
                     });
             }
         }

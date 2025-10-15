@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const db = require("../database/db");  // ✅ แก้ path ให้ถูก
+const db = require("../database/db"); 
 
 const email = "admin@god.com";
 const password = "admin123";

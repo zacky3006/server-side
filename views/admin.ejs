@@ -155,12 +155,12 @@
         // --- ฟังก์ชันอื่นๆ เหมือนเดิม ---
         function logout(event) {
             event.preventDefault();
-            const confirmLogout = confirm("Do you want to Logout ?");
+            const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
             if (confirmLogout) {
                 // แนะนำให้มี API สำหรับ Logout
                 fetch('/auth/logout', { method: 'POST' })
                     .finally(() => {
-                        window.location.href = "/signin";
+                        window.location.href = "/signout";
                     });
             }
         }

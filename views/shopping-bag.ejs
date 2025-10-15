@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault(); // ป้องกันเปลี่ยนหน้าอัตโนมัติ
         const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
         if (confirmLogout) {
-            window.location.href = "/signin"; // ไปที่หน้า Sign In
+            window.location.href = "/signout"; // ไปที่หน้า Sign In
         }
     }
     const CUSTOMER_ID = "<%= customer_id %>";
