@@ -10,6 +10,11 @@ exports.showPaymentPage = (req, res) => {
 };
 
 exports.clearCart = (req, res) => {
+
+    if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    
     const { customer_id } = req.body;
 
     paymentModel.clearCart(customer_id, (err) => {

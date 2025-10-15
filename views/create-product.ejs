@@ -76,7 +76,7 @@
                 // แนะนำให้มี API สำหรับ Logout
                 fetch('/auth/logout', { method: 'POST' })
                     .finally(() => {
-                        window.location.href = "/signin";
+                        window.location.href = "/signout";
                     });
             }
         }
@@ -120,6 +120,11 @@
                 alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
             }
         });
+
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
     </script>
 </body>
 </html>

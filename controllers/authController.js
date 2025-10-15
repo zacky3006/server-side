@@ -64,5 +64,12 @@ exports.signUp = (req, res) => {
 
 exports.signOut = (req, res) => {
     res.clearCookie("token");
+
+    // ป้องกัน cache หน้าเก่า
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+
+    // redirect ไปหน้า signin
     res.redirect("/signin");
 };

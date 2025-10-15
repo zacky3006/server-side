@@ -157,7 +157,7 @@
             event.preventDefault();
             const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
             if (confirmLogout) {
-                window.location.href = "/signin";
+                window.location.href = "/signout";
             }
         }
 
@@ -253,6 +253,11 @@
         .catch(error => console.error('Error:', error));
     });
 });
+
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
 
     </script>
 

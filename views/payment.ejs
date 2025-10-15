@@ -107,7 +107,7 @@
 function logout(event) {
     event.preventDefault();
     if (confirm("Do you want to Logout ?")) {
-        window.location.href = "/signin";
+        window.location.href = "/signout";
     }
 }
 
@@ -145,6 +145,13 @@ function submitForm(event) {
         alert("Error occurred while processing your order.");
     });
 }
+
+    window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+     
 </script>
 
 </body>

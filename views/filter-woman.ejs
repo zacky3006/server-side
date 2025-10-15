@@ -245,11 +245,16 @@
     function logout(event) {
         event.preventDefault();
         if (confirm("คุณต้องการออกจากระบบหรือไม่ ?")) {
-            window.location.href = "/signin";
+            window.location.href = "/signout";
         }
     }
 
     displayProducts(); // โหลดสินค้าเริ่มต้น
+
+    window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
 </script>
     
 </body>
