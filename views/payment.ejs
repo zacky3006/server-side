@@ -135,7 +135,7 @@ function submitForm(event) {
     .then(data => {
         if (data.success) {
             alert("Thank you for your order!");
-            window.location.href = "/home?customer_id=" + customerId;
+            window.location.href = "/home";
         } else {
             alert(data.error || "Error occurred while processing your order.");
         }
